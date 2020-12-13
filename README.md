@@ -1,11 +1,11 @@
 # PAYDAY 2 - Chat Commands
 
-**[Download]()**
+**[Download](https://www.unknowncheats.me/forum/payday-2-a/430858-chat-commands.html)**
 
 ## Installation
 
 - Install [SuperBLT](https://superblt.znix.xyz/).
-- Download [Chat Commands]().
+- Download [Chat Commands](https://www.unknowncheats.me/forum/payday-2-a/430858-chat-commands.html).
 - Open the downloaded archive and move the **ChatCommands** folder to your **PAYDAY 2/mods** folder.
 - Start the game.
 
