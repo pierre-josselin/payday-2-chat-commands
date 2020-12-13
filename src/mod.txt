@@ -1,0 +1,20 @@
+{
+    "name": "Chat Commands",
+    "description": "Chat Commands",
+    "author": "ChildOfSorrow",
+	"contact": "ChildOfSorrow",
+    "version": "1.0.0",
+    "blt_version": 2,
+    "persist_scripts": [
+        {
+            "global": "ChatCommands",
+            "script_path": "classes/ChatCommands.lua"
+        }
+    ],
+    "hooks": [
+        {
+            "hook_id" : "lib/managers/chatmanager",
+            "script_path" : "hooks/chatmanager.lua"
+        }
+    ]
+}
