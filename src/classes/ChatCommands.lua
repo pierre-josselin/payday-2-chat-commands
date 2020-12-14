@@ -84,7 +84,7 @@ ChatCommands.commands = {
                 ChatCommands.playerNotFound(parameters[1])
                 return
             end
-            if peer:id() == 1 then
+            if ChatCommands.isPeerSelf(peer) then
                 ChatCommands.message("You cannot kick yourself", ChatCommands.colors.warning)
                 return
             end
@@ -96,7 +96,6 @@ ChatCommands.commands = {
     },
     ban = {
         conditions = {
-            isHost = true
         },
         callback = function(parameters)
             local count = ChatCommands.count(parameters)
@@ -109,14 +108,17 @@ ChatCommands.commands = {
                 ChatCommands.playerNotFound(parameters[1])
                 return
             end
-            if peer:id() == 1 then
+            if ChatCommands.isPeerSelf(peer) then
                 ChatCommands.message("You cannot ban yourself", ChatCommands.colors.warning)
                 return
             end
             managers.ban_list:ban(peer:user_id(), peer:name())
-            local session = managers.network:session()
-            session:send_to_peers("kick_peer", peer:id(), 6)
-            session:on_peer_kicked(peer, peer:id(), 6)
+            ChatCommands.message(peer:name() .. " has been banned", ChatCommands.colors.info)
+            if Network:is_server() then
+                local session = managers.network:session()
+                session:send_to_peers("kick_peer", peer:id(), 6)
+                session:on_peer_kicked(peer, peer:id(), 6)
+            end
         end,
         help = ChatCommands.delimiter .. "ban <player_number> | <player_color>"
     },
@@ -284,4 +286,8 @@ end
 
 function ChatCommands.playerNotFound(value)
     ChatCommands.message("Player " .. tostring(value) .. " not found", ChatCommands.colors.warning)
+end
+
+function ChatCommands.isPeerSelf(peer)
+    return tostring(peer:user_id()) == tostring(Steam:userid())
 end

@@ -5,6 +5,7 @@
 ### Added
 
 - Commands aliases
+- Ban as client
 
 ## [1.0.0] - 2020-12-13
 
