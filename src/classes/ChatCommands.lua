@@ -182,10 +182,22 @@ ChatCommands.commands = {
     }
 }
 
+ChatCommands.aliases = {
+    s = "spawn",
+    r = "restart",
+    k = "kick",
+    b = "ban",
+    p = "profile",
+    h = "help"
+}
+
 function ChatCommands.execute(message)
     ChatCommands.previousCommand = message
     local parameters = ChatCommands.split(message)
     local name = string.sub(table.remove(parameters, 1), 2)
+    if ChatCommands.aliases[name] then
+        name = ChatCommands.aliases[name]
+    end
     local command = ChatCommands.commands[name]
     
     if not command then
