@@ -7,7 +7,8 @@ ChatCommands.colors = {
     success = Color("27ae60"),
     warning = Color("d35400"),
     danger = Color("c0392b"),
-    muted = Color("bdc3c7")
+    muted = Color("bdc3c7"),
+    white = Color("ffffff")
 }
 
 ChatCommands.commands = {
@@ -141,6 +142,47 @@ ChatCommands.commands = {
         end,
         help = ChatCommands.delimiter .. "profile <player_number> | <player_color>"
     },
+    mods = {
+        conditions = {
+        },
+        callback = function(parameters)
+            local count = ChatCommands.count(parameters)
+            if count ~= 1 then
+                ChatCommands.usage("mods")
+                return
+            end
+            local peer = ChatCommands.getPeer(parameters[1])
+            if not peer then
+                ChatCommands.playerNotFound(parameters[1])
+                return
+            end
+            if ChatCommands.isPeerSelf(peer) then
+                ChatCommands.message("You cannot get your own mod list", ChatCommands.colors.warning)
+                return
+            end
+            local mods = peer:synced_mods()
+            local count = 0
+            local message = "\n"
+            for key, mod in ipairs(mods) do
+                if not mod.name then
+                    goto continue
+                end
+                if mod.name == "SuperBLT" then
+                    goto continue
+                end
+                count = count + 1
+                message = message .. "- " .. mod.name .. "\n"
+                ::continue::
+            end
+            if count > 0 then
+                message = message .. tostring(count) .. " mod" .. (count > 1 and "s" or "") .. " installed"
+            else
+                message = "No mod installed"
+            end
+            ChatCommands.message(message, ChatCommands.colors.info)
+        end,
+        help = ChatCommands.delimiter .. "mods <player_number> | <player_color>"
+    },
     exit = {
         conditions = {
         },
@@ -167,6 +209,7 @@ ChatCommands.commands = {
                 message = message .. ChatCommands.commands["kick"].help .. "\n"
                 message = message .. ChatCommands.commands["ban"].help .. "\n"
                 message = message .. ChatCommands.commands["profile"].help .. "\n"
+                message = message .. ChatCommands.commands["mods"].help .. "\n"
                 message = message .. ChatCommands.commands["exit"].help .. "\n"
                 message = message .. ChatCommands.commands["help"].help
                 ChatCommands.message(message, ChatCommands.colors.info)
@@ -190,6 +233,7 @@ ChatCommands.aliases = {
     k = "kick",
     b = "ban",
     p = "profile",
+    m = "mods",
     h = "help"
 }
 
@@ -255,7 +299,7 @@ function ChatCommands.count(table)
 end
 
 function ChatCommands.message(message, color)
-    managers.chat:_receive_message(1, ChatCommands.name, message, color)
+    managers.chat:_receive_message(1, ChatCommands.name, tostring(message), color or ChatCommands.colors.white)
 end
 
 function ChatCommands.usage(name)
