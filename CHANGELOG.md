@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.1 - 2020-12-14
+## [1.0.1] - 2020-12-14
 
 ### Added
 
@@ -12,3 +12,4 @@
 Initial release
 
 [1.0.0]: https://www.unknowncheats.me/forum/downloads.php?do=file&id=31850
+[1.0.1]: https://www.unknowncheats.me/forum/downloads.php?do=file&id=31870
