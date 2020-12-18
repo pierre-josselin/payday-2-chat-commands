@@ -20,5 +20,6 @@
 | /kick    | /k    | <player_number> \| <player_color>                   | Kick a player.                     | host           |
 | /ban     | /b    | <player_number> \| <player_color>                   | Kick and blacklist a player.       | -              |
 | /profile | /p    | <player_number> \| <player_color>                   | Open player's steam profile.       | -              |
+| /mods    | /m    | <player_number> \| <player_color>                   | Get player mod list.               | -              |
 | /exit    | -     | -                                                   | Close the game.                    | -              |
 | /help    | /h    | [command_name]                                      | Get command usage.                 | -              |
