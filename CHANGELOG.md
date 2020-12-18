@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3 - 2020-12-18
+
+### Added
+
+- Player playtime command
+
 ## [1.0.2] - 2020-12-18
 
 ### Added

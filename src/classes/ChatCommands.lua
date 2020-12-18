@@ -68,7 +68,7 @@ ChatCommands.commands = {
                 ChatCommands.usage("tp")
             end
         end,
-        help = ChatCommands.delimiter .. "tp <player_number> | <player_color> | <x> <y> <z>"
+        help = ChatCommands.delimiter .. "tp <number> | <color> | <x> <y> <z>"
     },
     kick = {
         conditions = {
@@ -93,7 +93,7 @@ ChatCommands.commands = {
             session:send_to_peers("kick_peer", peer:id(), 0)
             session:on_peer_kicked(peer, peer:id(), 0)
         end,
-        help = ChatCommands.delimiter .. "kick <player_number> | <player_color>"
+        help = ChatCommands.delimiter .. "kick <number> | <color>"
     },
     ban = {
         conditions = {
@@ -121,7 +121,7 @@ ChatCommands.commands = {
                 session:on_peer_kicked(peer, peer:id(), 6)
             end
         end,
-        help = ChatCommands.delimiter .. "ban <player_number> | <player_color>"
+        help = ChatCommands.delimiter .. "ban <number> | <color>"
     },
     profile = {
         conditions = {
@@ -140,7 +140,26 @@ ChatCommands.commands = {
             local url = "https://steamcommunity.com/profiles/" .. peer:user_id() .. "/stats/PAYDAY2"
             Steam:overlay_activate("url", url)
         end,
-        help = ChatCommands.delimiter .. "profile <player_number> | <player_color>"
+        help = ChatCommands.delimiter .. "profile <number> | <color>"
+    },
+    playtime = {
+        conditions = {
+        },
+        callback = function(parameters)
+            local count = ChatCommands.count(parameters)
+            if count ~= 1 then
+                ChatCommands.usage("playtime")
+                return
+            end
+            local peer = ChatCommands.getPeer(parameters[1])
+            if not peer then
+                ChatCommands.playerNotFound(parameters[1])
+                return
+            end
+            local url = "https://steamcommunity.com/profiles/" .. peer:user_id() .. "/?xml=1"
+            dohttpreq(url, ChatCommands.playtimeCallback)
+        end,
+        help = ChatCommands.delimiter .. "playtime <number> | <color>"
     },
     mods = {
         conditions = {
@@ -181,7 +200,7 @@ ChatCommands.commands = {
             end
             ChatCommands.message(message, ChatCommands.colors.info)
         end,
-        help = ChatCommands.delimiter .. "mods <player_number> | <player_color>"
+        help = ChatCommands.delimiter .. "mods <number> | <color>"
     },
     exit = {
         conditions = {
@@ -209,6 +228,7 @@ ChatCommands.commands = {
                 message = message .. ChatCommands.commands["kick"].help .. "\n"
                 message = message .. ChatCommands.commands["ban"].help .. "\n"
                 message = message .. ChatCommands.commands["profile"].help .. "\n"
+                message = message .. ChatCommands.commands["playtime"].help .. "\n"
                 message = message .. ChatCommands.commands["mods"].help .. "\n"
                 message = message .. ChatCommands.commands["exit"].help .. "\n"
                 message = message .. ChatCommands.commands["help"].help
@@ -233,6 +253,7 @@ ChatCommands.aliases = {
     k = "kick",
     b = "ban",
     p = "profile",
+    t = "playtime",
     m = "mods",
     h = "help"
 }
@@ -334,4 +355,19 @@ end
 
 function ChatCommands.isPeerSelf(peer)
     return tostring(peer:user_id()) == tostring(Steam:userid())
+end
+
+function ChatCommands.playtimeCallback(data)
+    if type(data) ~= "string" then
+        ChatCommands.message("Request failed", ChatCommands.colors.danger)
+        return
+    end
+    local hours = data:match("<mostPlayedGame>.-<gameLink>.-218620.-</gameLink>.-<hoursOnRecord>([%d,.]+)</hoursOnRecord>")
+    if hours then
+        local message = hours .. " hours"
+        ChatCommands.message(message, ChatCommands.colors.info)
+    else
+        local message = "Playtime unavailable"
+        ChatCommands.message(message, ChatCommands.colors.warning)
+    end
 end
